@@ -1,7 +1,7 @@
 import {ref} from 'vue';
 import {defineStore} from "pinia";
 import {Api} from "@/apis";
-import type {ArtistsType,SongListType} from "@/typings/audio";
+import type {SongListType} from "@/typings/audio";
 
 
 export const conSongList = defineStore('songList', () => {

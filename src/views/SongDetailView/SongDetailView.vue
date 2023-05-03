@@ -1,12 +1,14 @@
 <script setup lang="ts">
-
+import {conSongList} from "@/stores/songlist";
 import {conAudio} from "@/stores/audio";
 import {useRouter} from "vue-router";
 import {storeToRefs} from "pinia";
 import {computed, ref} from "vue";
 
 const router = useRouter();
-const {playingMusic, audioPlayState, duration, currentTime } = storeToRefs(conAudio());
+const {playingMusic, audioPlayState, duration, currentTime} = storeToRefs(conAudio());
+const {audioPlayToggle} = conAudio();
+const {showSongList} = conSongList();
 
 let showLyric = ref<boolean>(false);
 
@@ -40,7 +42,7 @@ const progressValue = computed({
   },
   set(value) {
     let current = (value / 100) * duration.value;
-    emit('setAudioCurrentTime',current);
+    emit('setAudioCurrentTime', current);
   }
 })
 
@@ -78,12 +80,19 @@ let artists = computed(() => {
         <div class="control-bar">
           <div class="progress">
             <span class="currentTimer">{{ currentTimeStr }}</span>
-            <van-slider v-model="progressValue" button-size="12px"/>
-            <span>{{ durationTimeStr }}</span>
+            <van-slider v-model="progressValue" active-color="#fff" button-size="12px"/>
+            <span class="durationTime">{{ durationTimeStr }}</span>
           </div>
           <div class="btn-wrap">
-            <div class="play-btn"></div>
-            <div class="list-btn"></div>
+            <div class="loop"></div>
+            <div class="prev-btn"></div>
+            <div
+                class="play-btn"
+                @click="audioPlayToggle"
+                :class="{pause: audioPlayState}"
+            ></div>
+            <div class="next-btn"></div>
+            <div class="list-btn" @click="showSongList"></div>
           </div>
         </div>
       </div>
@@ -185,6 +194,76 @@ let artists = computed(() => {
         width: 62%;
         border-radius: 999px;
       }
+    }
+
+    .control-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      .progress {
+        display: flex;
+        align-items: center;
+        padding: 0 10px;
+
+        .currentTimer {
+          margin-right: 10px;
+          color: #d2d2d2;
+        }
+
+        .durationTime {
+          margin-left: 15px;
+          color: #898989
+        }
+      }
+
+      .btn-wrap {
+        display: flex;
+        align-items: center;
+        background: #3e3f4a;
+        padding: 20px 30px;
+
+        .play-btn {
+          width: 60px;
+          height: 60px;
+          background-image: url(@/assets/image/play.png);
+          background-size: cover;
+
+          &.pause {
+            background-image: url(@/assets/image/pause.png);
+          }
+        }
+
+        .list-btn {
+          width: 30px;
+          height: 30px;
+          background-image: url(@/assets/image/list.png);
+          background-size: cover;
+        }
+
+        .prev-btn {
+          width: 30px;
+          height: 30px;
+          background-image: url(@/assets/image/prev.png);
+          background-size: cover;
+        }
+
+        .next-btn {
+          width: 30px;
+          height: 30px;
+          background-image: url(@/assets/image/next.png);
+          background-size: cover;
+        }
+
+        .loop {
+          width: 30px;
+          height: 30px;
+          background-image: url(@/assets/image/loop.png);
+          background-size: cover;
+        }
+      }
+
     }
   }
 }

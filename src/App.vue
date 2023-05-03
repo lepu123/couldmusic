@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {RouterView} from 'vue-router';
-import {computed, onMounted, ref, watch} from "vue";
+import { onMounted, ref, watch} from "vue";
 import CurrentPlayList from "@/components/CurrentPlayList.vue";
 import {conSongList} from "@/stores/songlist";
 import {conAudio} from "@/stores/audio";
