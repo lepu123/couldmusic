@@ -3,7 +3,7 @@ import {ref, onMounted} from "vue";
 import {Api} from "@/apis";
 import DiscoverCard from "./DiscoverCard.vue";
 
-import type {BlocksType,BannerType} from "@/typings/discover"
+import type {BlocksType, BannerType} from "@/typings/discover"
 // 测试接口数据
 const blocks = ref<BlocksType[]>([])
 const dataDemo = ref<any>([])
@@ -82,7 +82,7 @@ onMounted(async () => {
       };
     } else if (b.showType === "HOMEPAGE_NEW_SONG_NEW_ALBUM") {
       let creative = b.creatives.map((c: any) => {
-        let newSongList = c.resources.map((s:any) => {
+        let newSongList = c.resources.map((s: any) => {
           return {
             songId: s.resourceExtInfo?.songData?.id || s.resourceId || 0,
             songTitle: s.resourceExtInfo?.songData?.name || s.uiElement.mainTitle.title || s.subTitle.title,
@@ -104,7 +104,7 @@ onMounted(async () => {
         creatives: creative
       };
     } else if (b.showType === "HOMEPAGE_SLIDE_TOPLIST") {
-      let creative = b.creatives.map((m:any) => {
+      let creative = b.creatives.map((m: any) => {
         let songList = m.resources.map((r: any) => {
           return {
             songId: r.resourceExtInfo.songData.id,
@@ -136,7 +136,7 @@ onMounted(async () => {
 
 async function getBanner() {
   let {data} = await Api.getHomeBanner()
-  bannersList.value = data.banners.map((b:any) => {
+  bannersList.value = data.banners.map((b: any) => {
     return {
       pic: b.pic,
       typeTitle: b.typeTitle
@@ -145,47 +145,45 @@ async function getBanner() {
 }
 </script>
 <template>
-  <transition>
-    <div class="discover">
-      <!--顶部搜索栏-->
-      <van-nav-bar fixed z-index="10" safe-area-inset-top>
-        <template #left>
-          <van-icon name="wap-nav" size="18"/>
-        </template>
-        <template #title>
-          <van-search
-              class="search-bar"
-              shape="round"
-              background="0"
-              placeholder="推荐搜索关键字"
-          />
-        </template>
-        <template #right>
-          <van-icon name="service" size="18"/>
-        </template>
-      </van-nav-bar>
-      <!--首页推荐-->
-      <div class="discover-container">
-        <!--首页轮播-->
-        <div class="discover-banner">
-          <van-swipe lazy-render :autoplay="3000">
-            <van-swipe-item v-for="(b,i) in bannersList" :key="i">
-              <img :src="b.pic" :alt="b.typeTitle">
-            </van-swipe-item>
-          </van-swipe>
-        </div>
-        <DiscoverCard
-            v-for="(b, i) in blocks"
-            :key="i"
-            :subTitle="b.subTitle"
-            :showType="b.showType"
-            :button="b.button"
-            :creatives="b.creatives"
-            :extInfo="b.exInfo"
+  <div class="discover">
+    <!--顶部搜索栏-->
+    <van-nav-bar fixed z-index="10" safe-area-inset-top>
+      <template #left>
+        <van-icon name="wap-nav" size="18"/>
+      </template>
+      <template #title>
+        <van-search
+            class="search-bar"
+            shape="round"
+            background="0"
+            placeholder="推荐搜索关键字"
         />
+      </template>
+      <template #right>
+        <van-icon name="service" size="18"/>
+      </template>
+    </van-nav-bar>
+    <!--首页推荐-->
+    <div class="discover-container">
+      <!--首页轮播-->
+      <div class="discover-banner">
+        <van-swipe lazy-render :autoplay="3000">
+          <van-swipe-item v-for="(b,i) in bannersList" :key="i">
+            <img :src="b.pic" :alt="b.typeTitle">
+          </van-swipe-item>
+        </van-swipe>
       </div>
+      <DiscoverCard
+          v-for="(b, i) in blocks"
+          :key="i"
+          :subTitle="b.subTitle"
+          :showType="b.showType"
+          :button="b.button"
+          :creatives="b.creatives"
+          :extInfo="b.exInfo"
+      />
     </div>
-  </transition>
+  </div>
 </template>
 
 

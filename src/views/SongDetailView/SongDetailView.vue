@@ -3,16 +3,20 @@ import {conSongList} from "@/stores/songlist";
 import {conAudio} from "@/stores/audio";
 import {useRouter} from "vue-router";
 import {storeToRefs} from "pinia";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
+import {Api} from '@/apis';
 
 const router = useRouter();
 const {playingMusic, audioPlayState, duration, currentTime} = storeToRefs(conAudio());
-const {audioPlayToggle} = conAudio();
+const {audioPlayToggle, setMusicPlay} = conAudio();
+const {songList} = storeToRefs(conSongList());
 const {showSongList} = conSongList();
 
 let showLyric = ref<boolean>(false);
 
-const emit = defineEmits(['setAudioCurrentTime'])
+const lyric = ref<string>('');
+
+const emit = defineEmits(['setAudioCurrentTime']);
 
 function back() {
   router.go(-1);
@@ -46,12 +50,70 @@ const progressValue = computed({
   }
 })
 
+const musicId = computed(() => {
+  return playingMusic.value.id;
+})
+
 let artists = computed(() => {
   if (playingMusic.value.artists !== undefined) {
     return playingMusic.value.artists.map((a) => a.name).join("/");
   }
   return "noname";
 })
+
+function nextMusic() {
+  for (let i = 0; i < songList.value.length; i++) {
+    let n = (i + 1) % songList.value.length;
+    if (playingMusic.value.id === songList.value[i].id) {
+      setMusicPlay(songList.value[n]);
+      break
+    }
+  }
+}
+
+function prevMusic() {
+  for (let i = 0; i < songList.value.length; i++) {
+    let n = i - 1 >= 0 ? i - 1 : songList.value.length - 1
+    if (playingMusic.value.id === songList.value[i].id) {
+      setMusicPlay(songList.value[n]);
+      break
+    }
+  }
+}
+
+function toggleLyric() {
+  showLyric.value = !showLyric.value
+}
+
+const lyricArr = computed(() => {
+  let res = [];
+
+  const lyrReg = /^\[(\d+):(\d+\.\d+)\](.*)/gim;
+  while (lyrReg.test(lyric.value)) {
+    let m = Number(RegExp.$1) * 60;
+    let time = Math.ceil((m + parseFloat(RegExp.$2)) * 1000) / 1000;
+    res.push({
+      time,
+      lyric: RegExp.$3
+    })
+  }
+  console.log(res);
+  return res;
+})
+
+async function getLyricStr() {
+  if (playingMusic.value.id !== undefined) {
+    let {data} = await Api.getLyric(playingMusic.value.id);
+    lyric.value = data.lrc.lyric
+  }
+}
+
+watch(musicId, (newId, oldId) => {
+  if (newId !== oldId) {
+    getLyricStr();
+  }
+})
+
 </script>
 
 <template>
@@ -65,7 +127,7 @@ let artists = computed(() => {
     </div>
     <div class="play-content">
       <div class="disc-container">
-        <div v-show="!showLyric" style="overflow: hidden">
+        <div v-show="!showLyric" @click="toggleLyric" style="overflow: hidden">
           <div class="disc-needle" :class="{ play: audioPlayState}"></div>
           <div class="disc-wrap" :class="{ play: audioPlayState}">
             <img :src="playingMusic.picUrl" :alt="playingMusic.name">
@@ -73,8 +135,8 @@ let artists = computed(() => {
         </div>
         <!--歌词解析部分可以用swiper-->
         <!--歌词解析-->
-        <div class="lry-list" v-show="showLyric">
-
+        <div class="lry-list" @click="toggleLyric" v-show="showLyric">
+          <p v-for="l in lyricArr">{{ l.lyric }}</p>
         </div>
         <!--控制器-->
         <div class="control-bar">
@@ -85,20 +147,20 @@ let artists = computed(() => {
           </div>
           <div class="btn-wrap">
             <div class="loop"></div>
-            <div class="prev-btn"></div>
+            <div class="prev-btn" @click="prevMusic"></div>
             <div
                 class="play-btn"
                 @click="audioPlayToggle"
                 :class="{pause: audioPlayState}"
             ></div>
-            <div class="next-btn"></div>
+            <div class="next-btn" @click="nextMusic"></div>
             <div class="list-btn" @click="showSongList"></div>
           </div>
         </div>
       </div>
-      <!--      <div class="bg-img">-->
-      <!--        <img :src="playingMusic.picUrl" :alt="playingMusic.name">-->
-      <!--      </div>-->
+      <div class="bg-img">
+        <img :src="playingMusic.picUrl" :alt="playingMusic.name">
+      </div>
     </div>
   </div>
 </template>
@@ -111,7 +173,7 @@ let artists = computed(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #ffffff;
+  background: rgba(140, 127, 127);
   z-index: 901;
 
   .nav {
@@ -127,6 +189,20 @@ let artists = computed(() => {
     .nav-title {
       flex: 1;
       text-align: center;
+      height: 100%;
+      padding-top: 10px;
+
+      h3 {
+        line-height: 15px;
+        font-size: 15px;
+        color: white;
+      }
+
+      p {
+        font-size: 12px;
+        margin-top: 5px;
+        color: white;
+      }
     }
   }
 
@@ -143,6 +219,9 @@ let artists = computed(() => {
     flex: 1 1 auto;
     position: relative;
     padding-top: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     overflow: auto;
 
     .disc-needle {
@@ -196,11 +275,12 @@ let artists = computed(() => {
       }
     }
 
+    .lry-list {
+      height: 70%;
+      overflow: hidden;
+    }
+
     .control-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
 
       .progress {
         display: flex;
@@ -220,8 +300,8 @@ let artists = computed(() => {
 
       .btn-wrap {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        background: #3e3f4a;
         padding: 20px 30px;
 
         .play-btn {
@@ -259,11 +339,25 @@ let artists = computed(() => {
         .loop {
           width: 30px;
           height: 30px;
-          background-image: url(@/assets/image/loop.png);
+          background-image: url(@/assets/image/loop-w.png);
           background-size: cover;
         }
       }
+    }
+  }
 
+  .bg-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    filter: blur(80px);
+
+    img {
+      transform: translateX(-50%);
+      height: 100%;
     }
   }
 }

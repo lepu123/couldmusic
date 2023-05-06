@@ -22,4 +22,11 @@ export const Api = {
             method: 'get'
         })
     },
+    //获取歌词
+    getLyric: (id:number): any => {
+        return http.request({
+            url: `/lyric?id=${id}`,
+            method: 'get'
+        })
+    }
 }
