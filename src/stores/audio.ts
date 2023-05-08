@@ -31,6 +31,7 @@ export const conAudio = defineStore('audio', () => {
         }
     }
 
+
     // 点击播放歌曲
     function setMusicPlay(option: PlayingMusicType) {
         playingMusic.value = option
@@ -41,6 +42,11 @@ export const conAudio = defineStore('audio', () => {
     function pauseAudio() {
         // console.log("pause");
         audioPlayState.value = false
+    }
+
+    //当删除列表歌曲时是当前播放歌曲清空
+    function deleteAudio() {
+        playingMusic.value = {};
     }
 
     // 音乐播放器开启播放
@@ -64,5 +70,5 @@ export const conAudio = defineStore('audio', () => {
         }
     })
 
-    return {audioPlayState, playingMusic, currentTime, duration, audioPlayToggle, setDuration, setCurrentTime, playAudio, pauseAudio, setMusicPlay, playingMusicUrl}
+    return {audioPlayState, playingMusic, currentTime, duration, audioPlayToggle, deleteAudio, setDuration, setCurrentTime, playAudio, pauseAudio, setMusicPlay, playingMusicUrl}
 })

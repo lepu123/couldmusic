@@ -15,8 +15,9 @@ export const conSongList = defineStore('songList', () => {
     }
 
     //给歌单列表添加歌曲
-    function addMusicToList(music:any) {
+    function addMusicToList(music: SongListType) {
         songList.value.push(music);
+        localStorage.songList = JSON.stringify(songList.value);
     }
 
     //显示歌单
@@ -31,6 +32,11 @@ export const conSongList = defineStore('songList', () => {
         // console.log("隐藏歌单",songListState.value);
     }
 
+    //删除歌曲
+    function deleteSongToList(index: number) {
+        songList.value.splice(index,1);
+        localStorage.songList = JSON.stringify(songList.value);
+    }
 
     async function getNewSong() {
         let songLists = localStorage.songList
@@ -63,5 +69,5 @@ export const conSongList = defineStore('songList', () => {
 
     }
 
-    return {songList,songListState, hideSongList, showSongList, addMusicToList, getNewSong}
+    return {songList,songListState, hideSongList, showSongList, addMusicToList, getNewSong, deleteSongToList}
 })

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import {computed} from "vue";
+import {computed, ref} from "vue";
+import {conSongList} from "@/stores/songlist";
+import {conAudio} from "@/stores/audio";
+import type {SongListType} from "@/typings/audio";
 
 const props = defineProps<{
   id: number,
@@ -10,13 +13,39 @@ const props = defineProps<{
   category?: string
 }>()
 
+const {addMusicToList} = conSongList();
+const {setMusicPlay} = conAudio();
+
+const artistArr = computed(() => {
+  return props.artists.map((artist: any) => {
+    return {
+      name: artist.name,
+      id: artist.id,
+      imgUrl: artist.picUrl
+    }
+  })
+})
+
+const musicOption = ref<SongListType>({
+  id: props.id,
+  type: 4,
+  picUrl: props.image,
+  name: props.title,
+  artists: artistArr.value
+})
+
 let artistsStr:any = computed(() => {
   return props.artists.map((a:any) => a.name).join("/");
 })
+
+function addPlayingMusic () {
+  addMusicToList(musicOption.value);
+  setMusicPlay(musicOption.value);
+}
 </script>
 
 <template>
-  <div class="song-list-item">
+  <div class="song-list-item" @click="addPlayingMusic()">
     <img :src="image" :alt="title" />
     <div class="song-content">
       <div class="title">

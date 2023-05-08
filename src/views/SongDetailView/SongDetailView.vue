@@ -17,6 +17,13 @@ let showLyric = ref<boolean>(false);
 const lyric = ref<string>('');
 
 const emit = defineEmits(['setAudioCurrentTime']);
+//当前歌词的offsetTop值
+const top = ref<number>(0);
+
+//获取歌词列表的父标签
+const lyricList = ref();
+//当前歌词标签
+const active = ref();
 
 function back() {
   router.go(-1);
@@ -97,8 +104,25 @@ const lyricArr = computed(() => {
       lyric: RegExp.$3
     })
   }
-  console.log(res);
+  // console.log(res);
   return res;
+})
+// 获取高亮歌词下标
+const highLightLyricIndex = computed(() => {
+  let index = 0;
+  for (let i = 0; i < lyricArr.value.length; i++) {
+    if (i >= lyricArr.value.length - 1) {
+      index = i;
+      break;
+    }
+    let time = lyricArr.value[i].time;
+    let nextTime = lyricArr.value[i+1].time;
+    if (currentTime.value >= time && currentTime.value < nextTime) {
+      index = i;
+      break;
+    }
+  }
+  return index;
 })
 
 async function getLyricStr() {
@@ -114,6 +138,18 @@ watch(musicId, (newId, oldId) => {
   }
 })
 
+watch(highLightLyricIndex, (newIndex,oldIndex) => {
+  if (newIndex !== oldIndex) {
+    // console.log(active.value[newIndex]);
+    top.value = active.value[newIndex].offsetTop;
+  }
+})
+
+watch(top, (newV,oldV) => {
+  if (newV !== oldV) {
+    lyricList.value.scrollTop = newV - 350
+  }
+})
 </script>
 
 <template>
@@ -136,7 +172,20 @@ watch(musicId, (newId, oldId) => {
         <!--歌词解析部分可以用swiper-->
         <!--歌词解析-->
         <div class="lry-list" @click="toggleLyric" v-show="showLyric">
-          <p v-for="l in lyricArr">{{ l.lyric }}</p>
+            <div class="lyric_div" ref="lyricList" v-if="lyricArr.length">
+              <div
+                  v-for="(l,i) in lyricArr"
+                  :key="i"
+                  class="lyricLines"
+                  ref="active"
+                  :class="{selected: highLightLyricIndex === i}"
+              >
+                {{l.lyric}}
+              </div>
+            </div>
+            <div v-else class="lyric_div">
+              歌词跑不见了~
+            </div>
         </div>
         <!--控制器-->
         <div class="control-bar">
@@ -278,6 +327,30 @@ watch(musicId, (newId, oldId) => {
     .lry-list {
       height: 70%;
       overflow: hidden;
+
+      .lyric_div {
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        scroll-behavior: smooth;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+
+        .lyricLines {
+          font-size: 22px;
+          line-height: 50px;
+          text-align: center;
+          color: #898989;
+
+          &.selected {
+            color: #be98aa;
+          }
+
+
+        }
+      }
     }
 
     .control-bar {

@@ -5,19 +5,26 @@ import {storeToRefs} from "pinia";
 // import {Api} from "@/apis";
 // import {computed} from "vue";
 import type {ArtistsType} from "@/typings/audio";
-import {computed} from "vue";
+// import {computed} from "vue";
 
 
-// const {hideSongList} = conSongList();
 const {songList} = storeToRefs(conSongList());
 const {audioPlayState, playingMusic} = storeToRefs(conAudio());
 
-const {setMusicPlay} = conAudio();
+const {setMusicPlay,deleteAudio} = conAudio();
+const {deleteSongToList} = conSongList();
 
 function artistsName(artists: Array<ArtistsType>) {
   return "- " + artists.map((a) => a.name).join("/");
 }
 
+
+function deleteSong(index: number, id: number) {
+  deleteSongToList(index);
+  if (playingMusic.value.id === id) {
+    deleteAudio();
+  }
+}
 </script>
 
 
@@ -37,13 +44,12 @@ function artistsName(artists: Array<ArtistsType>) {
     <ul class="play-list" :class="{ playing: audioPlayState }">
       <li
           class="play-list-song"
-          v-for="s in songList"
+          v-for="(s, i) in songList"
           :key="s.id"
           :class="{selected: s.id === playingMusic.id}"
-          @click="setMusicPlay(s)"
       >
         <!--            :class="{selected:}"-->
-        <div class="song-name">
+        <div class="song-name" @click="setMusicPlay(s)">
           <div v-show="s.id === playingMusic.id" class="voice-icon">
             <i></i>
             <i></i>
@@ -54,7 +60,7 @@ function artistsName(artists: Array<ArtistsType>) {
             <span class="artists">{{ artistsName(s.artists) }}</span>
           </p>
         </div>
-        <van-icon class="remove" name="cross"/>
+        <van-icon class="remove" name="cross" @click.self="deleteSong(i, s.id)"/>
       </li>
     </ul>
   </div>
