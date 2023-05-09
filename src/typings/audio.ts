@@ -2,7 +2,7 @@
 export interface ArtistsType {
     name: string,
     id: string,
-    imgUrl: string
+    imgUrl?: string
 }
 
 

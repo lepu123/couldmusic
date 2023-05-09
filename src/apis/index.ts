@@ -23,9 +23,16 @@ export const Api = {
         })
     },
     //获取歌词
-    getLyric: (id:number): any => {
+    getLyric: (id: number): any => {
         return http.request({
-            url: `/lyric?id=${id}`,
+            url: `lyric?id=${id}`,
+            method: 'get'
+        })
+    },
+    //获取歌单详情
+    getSongListDetail: (id: number):any => {
+        return http.request({
+            url: `playlist/detail?id=${id}`,
             method: 'get'
         })
     }

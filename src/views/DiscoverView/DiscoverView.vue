@@ -2,7 +2,7 @@
 import {ref, onMounted} from "vue";
 import {Api} from "@/apis";
 import DiscoverCard from "./DiscoverCard.vue";
-
+import Menu from "@/components/Menu.vue";
 import type {BlocksType, BannerType} from "@/typings/discover"
 // 测试接口数据
 const blocks = ref<BlocksType[]>([])
@@ -173,6 +173,8 @@ async function getBanner() {
           </van-swipe-item>
         </van-swipe>
       </div>
+      <!--首页分类-->
+      <Menu/>
       <DiscoverCard
           v-for="(b, i) in blocks"
           :key="i"
@@ -204,8 +206,9 @@ async function getBanner() {
     position: fixed;
     top: 0;
     left: 0;
-    padding-top: 46px;
-    padding-bottom: 100px;
+    //padding-top: 46px;
+    //padding-bottom: 100px;
+    padding: 46px 8px 100px;
     width: 100vw;
     height: 100vh;
     overflow-x: hidden;

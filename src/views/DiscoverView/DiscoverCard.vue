@@ -71,6 +71,7 @@ let currentComponents:any = computed(() => {
   border-radius: 10px;
   margin-top: 10px;
   padding: 15px 10px;
+  background: rgba(190, 152, 170, 0.18);
 
   .card-head {
     display: flex;

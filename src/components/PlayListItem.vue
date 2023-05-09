@@ -1,12 +1,16 @@
 <script setup lang="ts">
 
 import {computed} from "vue";
+import {useRouter} from "vue-router";
 
 const props = defineProps<{
   title: string,
   image: string,
-  playCount: number
+  playCount: number,
+  id: string
 }>()
+
+const router = useRouter();
 
 let playCountLabel = computed(() => {
   let res = props.playCount
@@ -26,11 +30,20 @@ let playCountLabel = computed(() => {
   return resSt;
 })
 
+function gotoSongListDetail() {
+  router.push({
+    path: 'songList',
+    query: {
+      id: props.id
+    }
+  });
+}
+
 </script>
 
 
 <template>
-  <div class="play-list-item">
+  <div class="play-list-item" @click="gotoSongListDetail">
     <div class="img-wrap">
       <img :src="image" :alt="title">
       <span class="play-count">{{ playCountLabel }}</span>
@@ -83,14 +96,14 @@ let playCountLabel = computed(() => {
       left: 0;
       right: 0;
       height: 45px;
-      background: linear-gradient(#000,transparent);
+      background: linear-gradient(#000, transparent);
       opacity: .5;
     }
   }
 
   .play-title {
     font-size: 15px;
-    font-family: 幼圆,serif;
+    font-family: 幼圆, serif;
     font-weight: 600;
     line-height: 16px;
   }

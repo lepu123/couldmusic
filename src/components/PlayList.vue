@@ -12,6 +12,7 @@ defineProps<{
     <PlayListItem
         v-for="c in playList"
         :key="c.creativeId"
+        :id="c.creativeId"
         :title="c.creativeTitle"
         :image="c.uiImage"
         :playCount="c.playCount"
