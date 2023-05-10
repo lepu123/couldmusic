@@ -6,11 +6,9 @@ import {conAudio} from "@/stores/audio";
 import {useRouter} from "vue-router";
 
 // 父组件传递控制全局音乐播放器显示
-const props = defineProps<{
-  showPlayControlBall: boolean
-}>()
 
-const { showPlayControlBall } = toRefs(props)
+
+
 
 // 播放歌单列表属性
 const useSongList = conSongList()
@@ -18,8 +16,10 @@ const {showSongList,hideSongList} = useSongList
 
 const router = useRouter();
 
+const playControl = ref();
+
 // 音乐属性
-const useAudio = conAudio()
+const useAudio = conAudio();
 const {audioPlayState,playingMusic} = storeToRefs(useAudio)
 const {audioPlayToggle} = useAudio
 
@@ -43,12 +43,11 @@ function gotoSongDetail() {
 </script>
 
 <template>
-  <div class="play-control">
+  <div class="play-control" ref="playControl">
     <!--控制器唱片-->
     <!--    <div class="song-disc" :style="{opacity: true}" :class="{playing: true}">-->
     <div
         class="song-disc"
-        :style="{opacity: showPlayControlBall ? 0 : 1}"
         :class="{playing: audioPlayState }"
         @click="gotoSongDetail"
     >

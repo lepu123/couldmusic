@@ -3,7 +3,7 @@ import {createPinia} from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import {Tabbar, TabbarItem, Icon, Search, NavBar, Swipe, SwipeItem, Popup, Slider} from "vant";
+import {Tabbar, TabbarItem, Icon, Search, NavBar, Swipe, SwipeItem, Popup, Slider, NoticeBar} from "vant";
 
 import './assets/reset.css'
 import './assets/main.css'
@@ -11,7 +11,7 @@ import 'vant/lib/index.css'
 
 const app = createApp(App)
 const vantConfig = [
-    Tabbar, TabbarItem, Icon, Search, NavBar, Swipe, SwipeItem, Popup, Slider
+    Tabbar, TabbarItem, Icon, Search, NavBar, Swipe, SwipeItem, Popup, Slider, NoticeBar
 ]
 
 app.use(createPinia())

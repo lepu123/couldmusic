@@ -7,7 +7,6 @@ import {conAudio} from "@/stores/audio";
 import PlayControl from "@/components/PlayControl.vue";
 import {storeToRefs} from "pinia";
 
-const showPlayControlBall = ref<boolean>(false)
 let audio = ref()
 
 const {getNewSong} = conSongList()
@@ -16,13 +15,6 @@ const {songListState} = storeToRefs(conSongList())
 const { audioPlayState} = storeToRefs(conAudio())
 const {playingMusicUrl,playAudio,setCurrentTime,setDuration} = conAudio()
 
-function hideBall() {
-  showPlayControlBall.value = true
-}
-
-function afterLeave() {
-  showPlayControlBall.value = false
-}
 
 function audioTimeUpdate() {
   setCurrentTime(audio.value.currentTime);
@@ -61,9 +53,7 @@ onMounted(() => {
       <component :is="Component" />
     </keep-alive>
   </router-view>
-  <play-control
-      :showPlayControlBall="showPlayControlBall"
-  />
+  <play-control/>
   <van-tabbar fixed route active-color="#be98aa" inactive-color="#3e3f4a">
     <van-tabbar-item to="/discover" icon="home-o">发现</van-tabbar-item>
     <van-tabbar-item to="/live" icon="search">博客</van-tabbar-item>
