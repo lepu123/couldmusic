@@ -116,7 +116,12 @@ const box = BoxType.box
     min-height: 10px;
 
     .name {
+      display: -webkit-box;
       color: white;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
 }
