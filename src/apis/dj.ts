@@ -14,5 +14,13 @@ export const Api = {
             url: '/dj/toplist',
             method: 'get'
         })
+    },
+    //电台
+    getDjHotByType: (params:any):any => {
+        return http.request({
+            url: '/dj/radio/hot',
+            method: 'get',
+            params
+        })
     }
 }

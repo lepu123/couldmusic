@@ -23,7 +23,9 @@ import {
     SkeletonParagraph,
     Button,
     Col,
-    Row
+    Row,
+    List,
+    Empty
 } from "vant";
 
 import './assets/reset.css'
@@ -51,7 +53,9 @@ const vantConfig = [
     SkeletonParagraph,
     Button,
     Col,
-    Row
+    Row,
+    List,
+    Empty
 ]
 
 app.use(createPinia())
