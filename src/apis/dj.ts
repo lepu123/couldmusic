@@ -2,9 +2,9 @@ import http from '@/http';
 
 export const Api = {
 //    dj轮播
-    getDjBanner: () => {
+    getCategoryRecommend: ():any => {
         return http.request({
-            url: '/dj/banner',
+            url: '/dj/category/recommend',
             method: 'get'
         })
     }
