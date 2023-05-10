@@ -4,16 +4,26 @@ import {computed, ref} from "vue";
 import {conAudio} from "@/stores/audio";
 import {conSongList} from "@/stores/songlist";
 
-const props = defineProps<{
-  name?: string,
-  img?: string,
-  description?: string,
-  tags?: Array<string>,
-  nickname?: string,
-  imgUrl?: string,
-  playCount?: number,
-  songList?: Array<SongListType>
-}>()
+
+const props = withDefaults(defineProps<{
+  name: string,
+  img: string,
+  description: string,
+  tags: Array<string>,
+  nickname: string,
+  imgUrl: string,
+  playCount: number,
+  songList: Array<SongListType>
+}>(), {
+  name: '',
+  img: '',
+  description: '',
+  tags: Array,
+  nickname: '',
+  imgUrl: '',
+  playCount: 0,
+  songList: Array
+})
 
 const {addMusicToList} = conSongList();
 const {setMusicPlay} = conAudio();
@@ -25,15 +35,13 @@ let playCountLabel = computed(() => {
 
   let resSt = ''
 
-  if (props.playCount !== undefined && res !== undefined) {
-    if (props.playCount >= 10000 && props.playCount < 100000) {
-      resSt = Math.floor(res / 1000) / 10 + "万";
-    } else if (props.playCount >= 100000) {
-      if (props.playCount < 100000000) {
-        resSt = Math.floor(res / 10000) + "万";
-      } else {
-        resSt = Math.floor(res / 10000000) / 10 + "亿";
-      }
+  if (props.playCount >= 10000 && props.playCount < 100000) {
+    resSt = Math.floor(res / 1000) / 10 + "万";
+  } else if (props.playCount >= 100000) {
+    if (props.playCount < 100000000) {
+      resSt = Math.floor(res / 10000) + "万";
+    } else {
+      resSt = Math.floor(res / 10000000) / 10 + "亿";
     }
   }
   return resSt;
@@ -43,7 +51,7 @@ function artistsStr(artists: any) {
   return artists.map((a: any) => a.name).join("/");
 }
 
-function addMusic(musicOption:SongListType) {
+function addMusic(musicOption: SongListType) {
   addMusicToList(musicOption);
   setMusicPlay(musicOption);
 }
@@ -66,12 +74,12 @@ function addMusic(musicOption:SongListType) {
           </div>
           <div class="right">
             <div class="sheet">
-              {{ props.name }}
+              {{ name }}
             </div>
             <div class="creator">
               <img :src="props.imgUrl" :alt="props.nickname">
               <div class="nickname">
-                {{ props.nickname }}
+                {{ nickname }}
               </div>
             </div>
             <div class="description" @click="showDescription = !showDescription">
@@ -86,7 +94,7 @@ function addMusic(musicOption:SongListType) {
         </div>
       </div>
       <div class="bg">
-        <img class="cover_img" :src="props.img" :alt="props.name">
+        <img class="cover_img" :src="img" :alt="name">
       </div>
     </div>
     <div class="song_list_wrapper">
@@ -96,7 +104,10 @@ function addMusic(musicOption:SongListType) {
           <div class="song_name">{{ s.name }}</div>
           <div class="singer">{{ artistsStr(s.artists) }}</div>
         </div>
-        <div class="right"><van-icon name="play" size="25" style="margin-left: 10px" /><van-icon name="ellipsis" style="margin-left: 10px" size="25"/></div>
+        <div class="right">
+          <van-icon name="play" size="25" style="margin-left: 10px"/>
+          <van-icon name="ellipsis" style="margin-left: 10px" size="25"/>
+        </div>
       </div>
     </div>
   </div>
@@ -280,7 +291,8 @@ function addMusic(musicOption:SongListType) {
         justify-content: center;
         flex: 1;
         overflow: hidden;
-        .song_name,.singer {
+
+        .song_name, .singer {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;

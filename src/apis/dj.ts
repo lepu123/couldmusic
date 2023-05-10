@@ -29,5 +29,21 @@ export const Api = {
             method: 'get',
             params
         })
+    },
+    //获取电台详情
+    getDjDetail: (params:any):any => {
+        return http.request({
+            url: '/dj/detail',
+            method: 'get',
+            params
+        })
+    },
+    //获取电台节目
+    getDjProgram: (params:any):any => {
+        return http.request({
+            url: '/dj/program',
+            method: 'get',
+            params
+        })
     }
 }

@@ -2,8 +2,10 @@
 import type {DjData} from "@/typings/dj";
 import {BoxType} from "@/typings/box";
 import {playCountLabel} from "@/untils";
+import {useRouter} from "vue-router";
+import {Api} from "@/apis/dj";
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   djData: DjData,
   boxType: BoxType
 }>(), {
@@ -22,11 +24,24 @@ withDefaults(defineProps<{
   boxType: BoxType.box
 })
 
+const router = useRouter();
+
+function gotoDetail() {
+  router.push({
+    path: '/djDetail',
+    query: {
+      id: props.djData.id
+    }
+  })
+}
+
+
+
 const box = BoxType.box
 </script>
 
 <template>
-  <div v-if="boxType === box" class="dj_item">
+  <div v-if="boxType === box" class="dj_item" @click="gotoDetail">
     <div class="cover">
       <div class="cover_img"><img :src="djData.picUrl + '?param=140y140'" :alt="djData.name"></div>
       <div class="feeScope" v-if="djData.feeScope === 0">免费</div>
@@ -37,7 +52,7 @@ const box = BoxType.box
     </div>
     <div class="info"><span class="name">{{ djData.name }}</span></div>
   </div>
-  <div v-else class="dj_item_line">
+  <div v-else class="dj_item_line" @click="gotoDetail">
     <div class="left"><img :src="djData.picUrl" :alt="djData.name"></div>
     <div class="right">
       <div class="dj_name">{{ djData.name }}</div>
