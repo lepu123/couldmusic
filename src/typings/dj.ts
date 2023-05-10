@@ -27,3 +27,13 @@ export interface DjData{
     playCount: number
     feeScope?: number
 }
+
+// 热门主播数据
+export interface PopularData{
+    avatarUrl: string
+    id: number
+    liveId: number
+    nickName: string
+    roomNo: number
+    userFollowedCount: number
+}

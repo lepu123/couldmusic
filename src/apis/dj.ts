@@ -22,5 +22,12 @@ export const Api = {
             method: 'get',
             params
         })
+    },
+    getTopPopular:  (params:any):any => {
+        return http.request({
+            url: '/dj/toplist/popular',
+            method: 'get',
+            params
+        })
     }
 }

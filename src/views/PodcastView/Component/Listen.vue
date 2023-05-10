@@ -3,6 +3,7 @@
 import {ref} from "vue";
 import TopList from "./Listen/TopList.vue";
 import DjCategory from "./Listen/DjCategory.vue";
+import TopPopular from "./Listen/TopPopular.vue";
 
 const active = ref<number>(0)
 </script>
@@ -15,7 +16,7 @@ const active = ref<number>(0)
           热门
         </div>
       </template>
-      <TopList />
+      <TopList/>
     </van-tab>
     <van-tab title="音乐">
       <template #title>
@@ -40,12 +41,14 @@ const active = ref<number>(0)
         </div>
       </template>
       <DjCategory :cate-id="3001"/>
-    </van-tab><van-tab title="红人馆">
+    </van-tab>
+    <van-tab title="红人馆">
       <template #title>
         <div class="tab_title" :class="{active_tab: active === 4}">
           红人馆
         </div>
       </template>
+      <TopPopular/>
     </van-tab>
   </van-tabs>
 </template>
