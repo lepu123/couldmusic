@@ -56,7 +56,7 @@ onMounted(() => {
   <play-control/>
   <van-tabbar fixed route active-color="#be98aa" inactive-color="#3e3f4a">
     <van-tabbar-item to="/discover" icon="home-o">发现</van-tabbar-item>
-    <van-tabbar-item to="/live" icon="search">博客</van-tabbar-item>
+    <van-tabbar-item to="/podcast" icon="search">博客</van-tabbar-item>
     <van-tabbar-item to="/user" icon="friends-o">我的</van-tabbar-item>
     <van-tabbar-item to="/follows" icon="setting-o">关注</van-tabbar-item>
     <van-tabbar-item to="/community" icon="chat-o">社区</van-tabbar-item>

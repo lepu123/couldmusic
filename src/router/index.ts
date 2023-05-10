@@ -26,9 +26,9 @@ const router = createRouter({
       component: () => import('@/views/UserView/UserView.vue')
     },
     {
-      path: '/live',
-      name: 'live',
-      component: () => import('@/views/LiveAudioView/LiveAudioView.vue')
+      path: '/podcast',
+      name: 'podcast',
+      component: () => import('@/views/PodcastView/index.vue')
     },
     {
       path: '/follows',
